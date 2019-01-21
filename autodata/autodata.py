@@ -9,7 +9,71 @@ def toAutoData(val):
         return autodict(val)
     else: return val
 
+class emptyitem:
+    def __init__(self, parent, key):
+        self.parent = parent
+        self.key = key
+
+    def __getitem__(self, key):
+        return emptyitem(self, key)
+
+    def __setitem__(self, key, val):
+        if type(key) == str:
+            newdata = autodict()
+        elif type(key) == int:
+            newdata = autolist()
+        else:
+            raise TypeError("key type error")
+        newdata[key] = val
+        self.parent[self.key] = newdata
+
+    def __len__(self):
+        return 0
+
+    def __iter__(self):
+        return iter([])
+
+    def __contains__(self, item):
+        return False
+
+    def keys(self):
+        return []
+    
+    def append(self, item):
+        newdata = autolist()
+        newdata.append(item)
+        self.parent[self.key] = newdata
+
+    def sort(self, *params):
+        pass
+
+    def clear(self):
+        pass
+
+    def __iadd__(self, val):
+        if type(val) == list:
+            val = autolist(val)
+        return copy.copy(val)
+
+    def __ior__(self, val):
+        return val
+    
+    def __ixor__(self, val):
+        return val
+    
+    def __iand__(self, val):
+        return self
+
+    def __isub__(self, val):
+        self.parent[self.key] = -val
+        return -val
+
+    def __imul__(self, val):
+        return self
+
 class autodict(dict):
+    empty = emptyitem(None, None)
+
     def __init__(self, initData = None):
         if isinstance(initData, dict):
             for key in initData.keys():
@@ -20,8 +84,9 @@ class autodict(dict):
     def aget(self, key, deffunc):
         t = type(key)
         if t == str:
-            if key in self:
-                return dict.__getitem__(self,key)
+            item = dict.get(self, key, autodict.empty)
+            if item != autodict.empty:
+                return item
             else:
                 if deffunc == None:
                     return emptyitem(self, key)
@@ -96,67 +161,6 @@ class autolist(list):
         list.__imul__(a, val)
         return a
 
-class emptyitem:
-    def __init__(self, parent, key):
-        self.parent = parent
-        self.key = key
-
-    def __getitem__(self, key):
-        return emptyitem(self, key)
-
-    def __setitem__(self, key, val):
-        if type(key) == str:
-            newdata = autodict()
-        elif type(key) == int:
-            newdata = autolist()
-        else:
-            raise TypeError("key type error")
-        newdata[key] = val
-        self.parent[self.key] = newdata
-
-    def __len__(self):
-        return 0
-
-    def __iter__(self):
-        return iter([])
-
-    def __contains__(self, item):
-        return False
-
-    def keys(self):
-        return []
-    
-    def append(self, item):
-        newdata = autolist()
-        newdata.append(item)
-        self.parent[self.key] = newdata
-
-    def sort(self, *params):
-        pass
-
-    def clear(self):
-        pass
-
-    def __iadd__(self, val):
-        if type(val) == list:
-            val = autolist(val)
-        return copy.copy(val)
-
-    def __ior__(self, val):
-        return val
-    
-    def __ixor__(self, val):
-        return val
-    
-    def __iand__(self, val):
-        return self
-
-    def __isub__(self, val):
-        self.parent[self.key] = -val
-        return -val
-
-    def __imul__(self, val):
-        return self
 
 def defined(obj):
     if obj == None:
