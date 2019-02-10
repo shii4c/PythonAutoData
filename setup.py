@@ -1,11 +1,14 @@
 from setuptools import setup
+import os
 
-with open("readme.md") as f:
-    long_description = f.read()
+long_description = "Auto allocation dict and list"
+if os.path.exists("readme.md"):
+    with open("readme.md") as f:
+        long_description = f.read()
 
 setup(
     name = 'autodata',
-    version = '0.1',
+    version = '0.11',
     url = 'https://github.com/shii4c/PythonAutoData',
     author = 'Kenichiro SHII',
     author_email = 'shii4c@gmail.com',
