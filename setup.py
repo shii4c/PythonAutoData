@@ -8,7 +8,7 @@ if os.path.exists("readme.md"):
 
 setup(
     name = 'autodata',
-    version = '0.11',
+    version = '0.12',
     url = 'https://github.com/shii4c/PythonAutoData',
     author = 'Kenichiro SHII',
     author_email = 'shii4c@gmail.com',
